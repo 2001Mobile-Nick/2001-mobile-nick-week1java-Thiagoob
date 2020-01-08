@@ -1,11 +1,17 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class EvaluationService {
+	
+	static boolean isVowel(char c)
+	{
+		return "aeiou".indexOf(c) >= 0;
+	}
 
     /**
      * 1. Without using the StringBuilder or StringBuffer class, write a method that
@@ -33,14 +39,14 @@ public class EvaluationService {
     public String acronym(String phrase) {
         int length = phrase.length();
         String acronym = "";
-        for (int index = 0; index < length; index++)
+        
+        String words[] = phrase.split("\\W+");
+        
+        for (String word: words)
         {
-            char ch = phrase.charAt(index);
-            if (Character.isUpperCase(ch))
-            {
-                acronym += ch;
-            }
+        	acronym += Character.toUpperCase(word.charAt(0));
         }
+        
         return acronym;
     }
 
@@ -144,11 +150,9 @@ public class EvaluationService {
     	int score = 0;
     	int length = string.length();
     	
-    	System.out.println(string);
     	for (int index = 0; index < length; index++)
     	{
-    		System.out.println(index);
-    		score += letterScores.get(string.charAt(index));
+    		score += letterScores.get(Character.toUpperCase(string.charAt(index)));
     	}
     	
     	return score;
@@ -185,9 +189,34 @@ public class EvaluationService {
      * Note: As this exercise only deals with telephone numbers used in
      * NANP-countries, only 1 is considered a valid country code.
      */
-    public String cleanPhoneNumber(String string) {
-        // TODO Write an implementation for this method declaration
-        return null;
+    public String cleanPhoneNumber(String string) throws IllegalArgumentException {
+    	
+    	String number = "";
+    	
+    	for (int index = 0; index < string.length(); index++)
+    	{
+    		char ch = string.charAt(index);
+    		
+    		if(Character.isDigit(ch))
+    		{
+    			number += ch;
+    		}
+    	}
+    	
+    	int length = number.length();
+    	
+    	if(length == 11 && (number.charAt(0) == '1'))
+    	{
+    		number = number.substring(1);
+    	}
+    	if(length == 10)
+    	{
+    		return number;
+    	}
+    	else
+    	{
+    		throw new IllegalArgumentException();
+    	}
     }
 
     /**
@@ -200,8 +229,24 @@ public class EvaluationService {
      * @return
      */
     public Map<String, Integer> wordCount(String string) {
-        // TODO Write an implementation for this method declaration
-        return null;
+    	
+    	HashMap<String, Integer> map = new HashMap<String, Integer>();
+    	
+    	String words[] = string.split("\\W+");
+    	
+    	for (String word: words)
+    	{
+    		if (map.containsKey(word))
+    		{
+    			map.put(word, map.get(word) + 1);
+    		}
+    		else
+    		{
+    			map.put(word, 1);
+    		}
+    	}
+    	
+        return map;
     }
 
     /**
@@ -239,12 +284,43 @@ public class EvaluationService {
      * binary search is a dichotomic divide and conquer search algorithm.
      *
      */
-    static class BinarySearch<T> {
+    static class BinarySearch<T extends Comparable<T>> {
         private List<T> sortedList;
 
         public int indexOf(T t) {
-            // TODO Write an implementation for this method declaration
-            return 0;
+        	int low = 0;
+        	int high = sortedList.size() - 1;
+        	int mid = 0;
+        	
+        	while(low <= high)
+        	{
+        		mid = (low + high) / 2;
+        		
+        		T midVal = sortedList.get(mid);
+        		int retVal = t.compareTo(midVal);
+        		
+        		if(midVal.equals(t))
+        		{
+        			return mid;
+        		}
+        		else if(retVal < 0)
+        		{
+        			high = mid - 1;
+        		}
+        		else
+        		{
+        			low = mid + 1;
+        		}
+        	}
+        	
+        	if(low <= high)
+        	{
+        		return mid;
+        	}
+        	else
+        	{
+        		return -1;
+        	}
         }
 
         public BinarySearch(List<T> sortedList) {
@@ -280,8 +356,37 @@ public class EvaluationService {
      * @return
      */
     public String toPigLatin(String string) {
-        // TODO Write an implementation for this method declaration
-        return null;
+    	
+    	String words[] = string.split("\\W+");
+    	
+    	for (int i = 0; i < words.length; i++)
+    	{
+    		String word = words[i];
+    		char currentChar = word.charAt(0);
+    		
+    		if (!isVowel(currentChar))
+    		{
+    			String substring = "";
+    			substring += currentChar;
+    			
+    			int index = 1;
+    			int length = word.length();
+    			
+    			while (!isVowel(currentChar = word.charAt(index)) && index < length)
+    			{
+    				substring += currentChar;
+    				index++;
+    			}
+    			
+    			word = word.substring(index) + substring;
+    		}
+    		
+    		word += "ay";
+    		
+    		words[i] = word;
+    	}
+    	
+        return String.join(" ", words);
     }
 
     /**
@@ -300,8 +405,25 @@ public class EvaluationService {
      * @return
      */
     public boolean isArmstrongNumber(int input) {
-        // TODO Write an implementation for this method declaration
-        return false;
+    	ArrayList<Integer> digits = new ArrayList<Integer>();
+    	
+    	int number = input;
+    	
+    	while (number > 0)
+    	{
+    		digits.add(number % 10);
+    		number /= 10;
+    	}
+    	
+    	int sum = 0;
+    	int size = digits.size();
+    	
+    	for (int digit: digits)
+    	{
+    		sum += Math.pow(digit, size);
+    	}
+    	
+        return sum == input;
     }
 
     /**
