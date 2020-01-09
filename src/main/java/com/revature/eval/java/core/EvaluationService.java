@@ -3,6 +3,7 @@ package com.revature.eval.java.core;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,33 @@ public class EvaluationService {
 	static boolean isVowel(char c)
 	{
 		return "aeiou".indexOf(c) >= 0;
+	}
+	
+	static boolean isPrime(int number)
+	{
+		if (number <= 1)
+		{
+			return false;
+		}
+		if (number <= 3)
+		{
+			return true;
+		}
+		
+		if (number % 2 == 0 || number % 3 == 0)
+		{
+			return false;
+		}
+		
+		for (int i = 5; i < number; i++)
+		{
+			if (number % i == 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
     /**
@@ -437,8 +465,29 @@ public class EvaluationService {
      * @return
      */
     public List<Long> calculatePrimeFactorsOf(long l) {
-        // TODO Write an implementation for this method declaration
-        return null;
+    	ArrayList<Long> factors = new ArrayList<Long>();
+    	
+    	while (l % 2 == 0)
+    	{
+	    	factors.add(2L);
+	    	l /= 2;
+    	}
+    	
+    	for (long prime = 3; prime <= Math.sqrt(l); prime += 2)
+    	{
+    		while (l % prime == 0)
+        	{
+    	    	factors.add(prime);
+    	    	l /= prime;
+        	}
+    	}
+    	
+    	if (l > 2)
+    	{
+    		factors.add(l);
+    	}
+    	
+        return factors;
     }
 
     /**
@@ -476,8 +525,41 @@ public class EvaluationService {
         }
 
         public String rotate(String string) {
-            // TODO Write an implementation for this method declaration
-            return null;
+        	String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        	int alphabetLength = alphabet.length() / 2;
+        	
+        	int length = string.length();
+        	
+        	String result = "";
+        	
+        	for (int index = 0; index < length; index++)
+        	{
+        		char character = string.charAt(index);
+        		
+        		if (Character.isAlphabetic(character))
+        		{
+	        		int originalIndex = alphabet.indexOf(character);
+	        		int rotatedIndex = 0;
+	        		
+	        		
+	        		if(originalIndex < alphabetLength)
+	        		{
+	        			rotatedIndex = (originalIndex + key) % alphabetLength;
+	        		}
+	        		else
+	        		{
+	        			rotatedIndex = ((originalIndex + key) % alphabetLength) + alphabetLength;
+	        		}
+	        		
+	        		result += alphabet.charAt(rotatedIndex);
+        		}
+        		else
+        		{
+        			result += character;
+        		}
+        	}
+        	
+            return result;
         }
 
     }
@@ -495,8 +577,41 @@ public class EvaluationService {
      * @return
      */
     public int calculateNthPrime(int i) {
-        // TODO Write an implementation for this method declaration
-        return 0;
+    	
+    	if(i < 1)
+    	{
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	int prime = 2;
+    	ArrayList<Integer> primes = new ArrayList<Integer>();
+    	
+    	while(primes.size() < i)
+    	{
+    		while(!isPrime(prime))
+    		{
+    			if(prime == 2)
+    			{
+    				prime++;
+    			}
+    			else
+    			{
+    				prime += 2;
+    			}
+    		}
+    		primes.add(prime);
+    		
+    		if(prime == 2)
+    		{
+    			prime++;
+    		}
+    		else
+    		{
+    			prime += 2;
+    		}
+    	}
+    	
+        return primes.get(i - 1);
     }
 
     /**
@@ -532,8 +647,51 @@ public class EvaluationService {
          * @return
          */
         public static String encode(String string) {
-            // TODO Write an implementation for this method declaration
-            return null;
+        	String plain = "abcdefghijklmnopqrstuvwxyz";
+        	String cipher = "zyxwvutsrqponmlkjihgfedcba";
+        	
+        	String encrypted = "";
+        	int letters = 0;
+        	
+        	String words[] = string.split("\\W+");
+        	
+        	for (int indexWord = 0; indexWord < words.length; indexWord++)
+        	{
+        		String word = words[indexWord];
+        		int length = word.length();
+        		
+        		for (int indexLetter = 0; indexLetter < length; indexLetter++)
+        		{
+        			char character = word.charAt(indexLetter);
+        			if (Character.isDigit(character))
+        			{
+        				encrypted += character;
+        			}
+        			else
+        			{
+	        			encrypted += cipher.charAt(plain.indexOf(Character.toLowerCase(character)));
+        			}
+	        		
+        			letters++;
+	        			
+        			if (letters % 5 == 0)
+        			{
+        				if (indexWord != words.length - 1)
+        				{
+        					encrypted += " ";
+        				}
+        				else
+        				{
+        					if (indexLetter != length - 1)
+        					{
+        						encrypted += " ";
+        					}
+        				}
+        			}
+        		}
+        	}
+        	
+            return encrypted;
         }
 
         /**
@@ -543,8 +701,32 @@ public class EvaluationService {
          * @return
          */
         public static String decode(String string) {
-            // TODO Write an implementation for this method declaration
-            return null;
+        	String plain = "abcdefghijklmnopqrstuvwxyz";
+        	String cipher = "zyxwvutsrqponmlkjihgfedcba";
+        	
+        	String decrypted = "";
+        	
+        	String words[] = string.split(" ");
+        	
+        	for (String word: words)
+        	{
+        		int length = word.length();
+        		
+        		for (int indexLetter = 0; indexLetter < length; indexLetter++)
+        		{
+        			char character = word.charAt(indexLetter);
+        			if (Character.isDigit(character))
+        			{
+        				decrypted += character;
+        			}
+        			else
+        			{
+	        			decrypted += plain.charAt(cipher.indexOf(character));
+        			}
+        		}
+        	}
+        	
+            return decrypted;
         }
     }
 
