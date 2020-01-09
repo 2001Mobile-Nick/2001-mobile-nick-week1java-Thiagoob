@@ -1,9 +1,10 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -857,8 +858,29 @@ public class EvaluationService {
      * @return
      */
     public Temporal getGigasecondDate(Temporal given) {
-        // TODO Write an implementation for this method declaration
-        return null;
+    	
+    	long seconds = (long) Math.pow(10, 9);
+    	
+    	Temporal start = null;
+    	
+    	if (given instanceof LocalDate)
+    	{
+	    	start = (LocalDate) given;
+	    	
+	    	start = ((LocalDate)start).atStartOfDay();
+    	}
+    	else if (given instanceof LocalDateTime)
+    	{
+    		start = given;
+    	}
+    	else
+    	{
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	LocalDateTime date = ((LocalDateTime)start).plusSeconds(seconds);
+    	
+        return date;
     }
 
     /**
