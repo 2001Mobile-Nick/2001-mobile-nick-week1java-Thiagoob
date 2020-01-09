@@ -406,6 +406,12 @@ public class EvaluationService {
     				index++;
     			}
     			
+    			if ((word.charAt(index - 1) == 'q') && (currentChar == 'u'))
+    			{
+    				substring += currentChar;
+    				index++;
+    			}
+    			
     			word = word.substring(index) + substring;
     		}
     		
@@ -753,8 +759,42 @@ public class EvaluationService {
      * @return
      */
     public boolean isValidIsbn(String string) {
-        // TODO Write an implementation for this method declaration
-        return false;
+    	
+    	String numbers[] = string.split("-");
+    	
+    	long sum = 0;
+    	
+    	for (int numbersIndex = 0, multiplyNumber = 10; numbersIndex < numbers.length; numbersIndex++)
+    	{
+    		int length = numbers[numbersIndex].length();
+    		
+    		for (int numberIndex = 0; numberIndex < length; numberIndex++, multiplyNumber--)
+    		{
+    			Character numberAsChar = numbers[numbersIndex].charAt(numberIndex);
+    			int number = 0;
+    			
+    			if (!Character.isDigit(numberAsChar))
+    			{
+    				if (numberAsChar.equals('X'))
+            		{
+            			number = 10;
+            		}
+    				else
+    				{
+    					return false;
+    				}
+    			}
+    			
+    			if(Character.isDigit(numberAsChar))
+    			{
+    				number = Character.getNumericValue(numberAsChar);
+    			}
+    			
+    			sum += number * multiplyNumber;
+    		}
+    	}
+    	
+    	return sum % 11 == 0;
     }
 
     /**
@@ -771,8 +811,41 @@ public class EvaluationService {
      * @return
      */
     public boolean isPangram(String string) {
-        // TODO Write an implementation for this method declaration
-        return false;
+    	
+    	String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    	int length = alphabet.length();
+    	
+    	String words[] = string.split("\\W+");
+    	
+    	HashMap<Character, Integer> lettersToCount = new HashMap<Character, Integer>();
+    	
+    	for (int index = 0; index < length; index++)
+    	{
+    		lettersToCount.put(alphabet.charAt(index), 1);
+    	}
+    	
+    	int charactersInPhrase = 0;
+    	
+    	for (String word: words)
+    	{
+    		int wordLength = word.length();
+
+    		for (int index = 0; index < wordLength; index++)
+    		{
+    			char character = Character.toLowerCase(word.charAt(index));
+    			
+    			int count = lettersToCount.get(character) - 1;
+    			
+    			lettersToCount.put(character, count);
+    			
+    			if (count == 0)
+    			{
+    				charactersInPhrase++;
+    			}
+    		}
+    	}
+    	
+        return charactersInPhrase == length;
     }
 
     /**
