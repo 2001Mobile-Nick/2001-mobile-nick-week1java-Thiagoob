@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -897,8 +898,26 @@ public class EvaluationService {
      * @return
      */
     public int getSumOfMultiples(int i, int[] set) {
-        // TODO Write an implementation for this method declaration
-        return 0;
+    	
+    	HashSet multiplesSet = new HashSet<Integer>();
+    	
+    	int sum = 0;
+    	
+    	for (int index = 0; index < set.length; index++)
+    	{
+    		for (int multiple = 1; set[index] * multiple < i; multiple++)
+    		{
+    			int result = set[index] * multiple;
+    			
+    			if (!multiplesSet.contains(result))
+    			{
+    				sum += result;
+    				multiplesSet.add(set[index] * multiple);
+    			}
+    		}
+    	}
+    	
+        return sum;
     }
 
     /**
@@ -938,8 +957,50 @@ public class EvaluationService {
      * @return
      */
     public boolean isLuhnValid(String string) {
-        // TODO Write an implementation for this method declaration
-        return false;
+    	
+    	int length = string.length();
+    	
+    	if (length <= 1)
+    	{
+    		return false;
+    	}
+    	
+    	if (!string.matches("[0-9 ]+"))
+    	{
+    		return false;
+    	}
+    	
+    	string = string.replaceAll(" ", "");
+    	
+    	length = string.length();
+    	
+    	int sum = 0;
+    	
+    	for (int startingIndex = 0; startingIndex < length; startingIndex++)
+    	{
+    		char numberAsChar = string.charAt(length - 1 - startingIndex);
+    		
+    		if (!Character.isDigit(numberAsChar))
+    		{
+    			return false;
+    		}
+    		
+    		int result = Character.getNumericValue(numberAsChar);
+    		
+    		if (startingIndex % 2 == 1)
+    		{
+    			result *= 2;
+    			
+    			if (result > 9)
+        		{
+        			result -= 9;
+        		}
+    		}
+    		
+    		sum += result;
+    	}
+        
+    	return sum % 10 == 0;
     }
 
     /**
@@ -970,8 +1031,49 @@ public class EvaluationService {
      * @return
      */
     public int solveWordProblem(String string) {
-        // TODO Write an implementation for this method declaration
-        return 0;
+    	
+    	string = string.replaceFirst("[^-\\d]+", "");
+    	
+    	string = string.replace("?", "");
+    	
+    	string = string.replace("by", "");
+    	
+    	String numbersAndOperation[] = string.split(" +");
+    	
+//    	System.out.println(numbersAndOperation.length);
+//    	
+//    	for (int i = 0; i < numbersAndOperation.length; i++)
+//    	{
+//    		System.out.println(numbersAndOperation[i]);
+//    	}
+//    	
+//    	return 0;
+    	
+    	int result = 0;
+    	
+    	int n1 = Integer.parseInt(numbersAndOperation[0]);
+    	int n2 = Integer.parseInt(numbersAndOperation[2]);
+    	
+    	String operation = numbersAndOperation[1];
+    	
+    	if (operation.equals("plus"))
+    	{
+    		result = n1 + n2;
+    	}
+    	else if (operation.equals("minus"))
+    	{
+    		result = n1 - n2;
+    	}
+    	else if (operation.equals("multiplied"))
+    	{
+    		result = n1 * n2;
+    	}
+    	else if (operation.equals("divided"))
+    	{
+    		result = n1 / n2;
+    	}
+    	
+        return result;
     }
 
 }

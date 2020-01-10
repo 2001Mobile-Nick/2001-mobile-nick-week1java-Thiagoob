@@ -364,7 +364,7 @@ public class EvaluationServiceTest {
 
 		assertTrue(evaluationService.isArmstrongNumber(input));
 	}
-
+	
 	/*******************************************************************
 	 * Question 10
 	 ******************************************************************/
